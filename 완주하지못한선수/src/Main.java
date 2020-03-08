@@ -20,6 +20,8 @@ public class Main {
             int i ;
             for(i = 0 ; i <completion.length ;i++) {
                 if (!participant[i].equals(completion[i]))
+                    continue;
+                else
                     return participant[i];
             }
             return participant[i];
