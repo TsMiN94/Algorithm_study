@@ -20,19 +20,16 @@ public class Main {
                     h.put(type, 2);
             }
 
-
             Set<String> keys = h.keySet();
             Iterator<String> it = keys.iterator();
             while (it.hasNext()) {
                 String key = it.next();
-                System.out.println(key);
-                System.out.println(h.get(key));
                 answer *= h.get(key);
             }
-
-            return answer-1;
+            //아무것도 안입는경우
+            answer--;
+            return answer;
         }
     }
-
 
 }
