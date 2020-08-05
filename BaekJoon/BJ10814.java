@@ -1,4 +1,4 @@
-package com.ssafy.algo;
+package BaekJun;
 
 import java.util.*;
 

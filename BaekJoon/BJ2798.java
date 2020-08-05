@@ -1,4 +1,4 @@
-package com.ssafy.algo;
+package BaekJun;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -26,13 +26,13 @@ public class BJ2798 {
 		for (int i = 0; i < N; i++) {
 			boolean visited[] = new boolean[N];
 
-			dfs(visited, arr, i, 0, 0);
+			perm(visited, arr, i, 0, 0);
 		}
 		System.out.println(answer);
 
 	}
 
-	private static void dfs(boolean[] visited, int[] arr, int i, int cnt, int sum) {
+	private static void perm(boolean[] visited, int[] arr, int i, int cnt, int sum) {
 		if (cnt == 3) {
 			if (sum <= M) {
 				answer = Math.max(sum, answer);
@@ -45,7 +45,7 @@ public class BJ2798 {
 			if (visited[j])
 				continue;
 			visited[j] = true;
-			dfs(visited, arr, j, cnt, sum +arr[j]);
+			perm(visited, arr, j, cnt, sum +arr[j]);
 			visited[j] = false;
 		}
 
