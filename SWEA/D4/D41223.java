@@ -1,68 +1,65 @@
-package com.ssafy.algo.swea;
+package SWEA_D4;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
+import java.util.*;
 
 public class D41223 {
+    static Stack<Character> op = new Stack<Character>();
+    static Stack<Integer> sum = new Stack<Integer>();
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        for(int t = 1; t <= 10; t++) {
+            int n = sc.nextInt();
+            String s = sc.next();
+            Stack <Character> op = new Stack();
+            String r = "";
+            for(int i = 0; i < s.length(); i++) {
+                char c = s.charAt(i);
+                if(c - '0' >= 0 && c - '0' <= 9) {
+                    r += String.valueOf(c);
+                }
+                else {
+                    if(op.isEmpty()) {
+                        op.push(c);
+                    }
+                    else {
+                        if(get_prior(op.peek()) <= get_prior(c)) {
+                            r += String.valueOf(op.pop());
+                            op.push(c);
+                        }
+                        else {
+                            op.push(c);
+                        }
+                    }
+                }
+            }
+            while(!op.isEmpty()) {
+                r += String.valueOf(op.pop());
+            }
 
-	public static void main(String[] args) throws NumberFormatException, IOException {
+            Stack <Integer> nums = new Stack();
+            for(int i = 0; i < r.length(); i++) {
+                char c = r.charAt(i);
+                if(c - '0' >= 0 && c -'9' <= 0) nums.push(c - '0');
+                else {
+                    int tmp1 = nums.pop();
+                    int tmp2 = nums.pop();
+                    if(c == '*') nums.push(tmp1 * tmp2);
+                    else if(c == '+') nums.push(tmp1 + tmp2);
+                }
+            }
+            System.out.println("#" + t + " " + nums.pop());
+        }
+    }
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    public static int get_prior(char c) {
+        if(c == '*')
+            return 1;
+        else if(c == '+')
+            return 3;
+        else
+            return -1;
+    }
 
-		for (int test_case = 1; test_case <= 10; test_case++) {
-			Queue<Character> numQue = new LinkedList<Character>();
-			Stack<Character> opStack = new Stack<Character>();
-			Deque<Character> q = new LinkedList<Character>();
-			int len = Integer.parseInt(br.readLine());
 
-			String str = br.readLine();
 
-			for (int i = 0; i < len; i++) {
-				if (str.charAt(i) == '+' || str.charAt(i) == '-' || str.charAt(i) == '/' || str.charAt(i) == '*')
-					opStack.add(str.charAt(i));
-				else
-					numQue.add(str.charAt(i));
-
-				if (numQue.size() >= 2) {
-					q.add(numQue.poll());
-					q.add(numQue.poll());
-					while (!opStack.isEmpty())
-						q.add(opStack.pop());
-				}
-
-			}
-			while (!numQue.isEmpty())
-				q.add(numQue.poll());
-			while (!opStack.isEmpty())
-				q.add(opStack.pop());
-
-			Stack<Integer> resStack = new Stack<Integer>();
-			for (int i = 0; i < len; i++) {
-				char first = q.peekFirst();
-			
-				if (first == '+' || first == '*') {
-					opStack.add(q.pollFirst());
-					if (resStack.size() >= 2) {
-						first = opStack.pop();
-						int a = resStack.pop();
-						int b = resStack.pop();
-						if (first == '+')
-							resStack.add((a + b));
-						else if (first == '*') {
-							resStack.add((a * b));
-						} 
-					}
-
-				} else {
-					resStack.add(q.pollFirst() - '0');
-				}
-			}
-			System.out.println("#"+test_case+ " " +resStack.pop() );
-		}
-	}
 }
