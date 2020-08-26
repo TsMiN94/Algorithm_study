@@ -3,9 +3,7 @@ package BackJun;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class BJ11403 {
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -25,19 +23,25 @@ public class BJ11403 {
                 arr[j][i] = arr[i][j];
                 if (arr[i][j] == 1) {
                     graph[i].add(j);
-                    graph[j].add(i);
                 }
             }
         }
 
 
-        for (int i = 0; i < N; i++) {
-            List<Integer> childs = graph[i];
-            for (int j = 0; j < childs.size(); j++) {
+        BFS(0);
+
+    }
+
+    private static void BFS(int v) {
+        Queue<Integer> q = new LinkedList<>();
+        q.add(v);
+        while (!q.isEmpty()) {
+            int curV = q.poll();
+            List<Integer> others = graph[curV];
+            for (int i = 0; i < others.size(); i++) {
 
             }
         }
-
     }
 
 
