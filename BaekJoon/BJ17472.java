@@ -179,7 +179,7 @@ public class BJ17472 {
 
     public static class Point {
         int x, y;
-
+        int cost;
         public Point(int x, int y) {
             this.x = x;
             this.y = y;
