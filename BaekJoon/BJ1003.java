@@ -23,6 +23,8 @@ public class Main {
 			one_cnt =0;
 		}
 	}
+	
+	
 
 	public static int fibo(int n) {
 		if (n == 0) {

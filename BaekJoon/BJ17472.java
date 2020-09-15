@@ -144,7 +144,6 @@ public class BJ17472 {
                 int ny = dy[i] + cur.y;
                 if (nx < 0 || ny < 0 || nx >= N || ny >= M || visited[nx][ny] || map[nx][ny] == 0)
                     continue;
-
                 visited[nx][ny] = true;
                 map[nx][ny] = section;
                 q.add(new Point(nx, ny));
@@ -152,6 +151,7 @@ public class BJ17472 {
         }
     }
 
+    
     public static class Bridge implements Comparable<Bridge> {
         int dist;
         int a, b;
@@ -179,7 +179,7 @@ public class BJ17472 {
 
     public static class Point {
         int x, y;
-
+        int cost;
         public Point(int x, int y) {
             this.x = x;
             this.y = y;
