@@ -1,74 +1,52 @@
+package BackJun;
+
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 
-public class Main {
 
-	private static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-	private static BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
-	private static int cnt1, cnt2 = 0;
-	private static int x, tmp;
+public class BJ1463 {
+    private static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-	public static void main(String[] args) throws NumberFormatException, IOException {
-		x = Integer.parseInt(reader.readLine());
-		tmp = x;
+    private static int x;
+    static int memo[] = new int[1000001];
 
-		solution();
-	}
+    public static void main(String[] args) throws IOException {
+        x = Integer.parseInt(reader.readLine());
+        System.out.println(DP(x));
 
-	private static void solution() throws IOException {
+    }
 
-		while (x != 1) {
-			if (divide3() || divide2()) {
-				cnt1++;
-				continue;
-			} else {
-				sub();
-				cnt1++;
-			}
+    private static int DP(int x) {
+        if (x == 1) {
+            memo[1] = 0;
+            return 0;
+        }
+        if (x == 2) {
+            memo[2] = 1;
+            return 1;
+        }
+        if (x == 3) {
+            memo[3] = 1;
+            return 1;
+        }
 
-		}
-		x = tmp;
 
-		sub();
-		cnt2++;
-		while (x != 1) {
-			if (divide3() || divide2()) {
-				cnt2++;
-				continue;
-			} else {
-				sub();
-				cnt2++;
-			}
-		}
+        if (memo[x] == 0) {
+            if (x % 3 == 0 && x % 2 == 0) {
+                memo[x] = Math.min(DP(x / 3) + 1, DP(x / 2) + 1);
+            } else if (x % 3 == 0 && x % 2 != 0) {
+                memo[x] = Math.min(DP(x / 3) + 1, DP(x - 1) + 1);
+            } else if (x % 3 != 0 && x % 2 == 0) {
+                memo[x] = Math.min(DP(x / 2) + 1, DP(x - 1) + 1);
+            } else {
+                memo[x] = DP(x - 1) + 1;
+            }
+        }
 
-		if (cnt1 < cnt2)
-			System.out.println(cnt1);
-		else {
-			System.out.println(cnt2);
-		}
-	}
 
-	private static boolean divide3() {
-		if (x % 3 == 0) {
-			x = x / 3;
-			return true;
-		} else
-			return false;
-	}
+        return memo[x];
+    }
 
-	private static boolean divide2() {
-		if (x % 2 == 0) {
-			x = x / 2;
-			return true;
-		} else
-			return false;
-	}
-
-	private static void sub() {
-		x = x - 1;
-
-	}
 }
