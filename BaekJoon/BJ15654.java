@@ -1,9 +1,8 @@
 package BackJun;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class BJ15654 {
@@ -12,6 +11,7 @@ public class BJ15654 {
     static int N, M;
     static boolean visited[];
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
     public static void main(String[] args) throws IOException {
 
@@ -27,24 +27,20 @@ public class BJ15654 {
             src[i] = Integer.parseInt(st.nextToken());
         }
 
+        Arrays.sort(src);
         perm(0);
+        bw.flush();
+        bw.close();
 
     }
 
-    private static void perm(int cnt) {
+    private static void perm(int cnt) throws IOException {
         if (cnt == M) {
-            boolean flag = true;
 
-            for (int i = 0; i < arr.length - 1; i++) {
-                if (arr[i] > arr[i + 1]) flag = false;
-            }
+            for (int i = 0; i < arr.length; i++)
+                bw.write(arr[i] + " ");
 
-            if (flag) {
-                for (int i = 0; i < arr.length; i++) {
-                    System.out.print(arr[i] + " ");
-                }
-                System.out.println();
-            }
+            bw.write("\n");
             return;
         }
         for (int i = 0; i < src.length; i++) {
