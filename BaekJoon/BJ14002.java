@@ -1,10 +1,10 @@
 package BackJun;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class BJ14002 {
     public static void main(String[] args) throws IOException {
@@ -12,33 +12,41 @@ public class BJ14002 {
         int N = Integer.parseInt(br.readLine());
         int arr[] = new int[N];
         int LIS[] = new int[N];
-        int answer[] = new int[N];
+        List graph[] = new List[N];
         StringTokenizer st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
+            graph[i] = new ArrayList<Integer>();
         }
 
         //앞에서부터 증가하는 부분수열 LIS 배열 값 갱신
         for (int i = 0; i < N; i++) {
             LIS[i] = 1;
-            answer[i] = arr[i];
 
-            int max = arr[i];
+            graph[i].add(arr[i]);
             for (int j = 0; j < i; j++) {
-                int sum = arr[i];
                 if (arr[i] > arr[j] && LIS[i] < LIS[j] + 1) {
                     LIS[i] = LIS[j] + 1;
-                    sum += answer[j];
+                    graph[i] = new ArrayList<Integer>();
+                    for (int k = 0; k < graph[j].size(); k++) {
+                        graph[i].add(graph[j].get(k));
+                    }
+                    graph[i].add(arr[i]);
                 }
-                if (sum > max)
-                    max = sum;
+
             }
-            answer[i] = max;
         }
-
-
-        System.out.println(Arrays.toString(answer));
-        Arrays.sort(answer);
-        System.out.println(answer[N - 1]);
+        int idx = 0;
+        int max = 0;
+        for (int i = 0; i < N; i++) {
+            if (max < LIS[i]) {
+                idx = i;
+                max = LIS[i];
+            }
+        }
+        List<Integer> list = graph[idx];
+        System.out.println(LIS[idx]);
+        for (int i = 0; i < list.size(); i++)
+            System.out.print(list.get(i) + " ");
     }
 }
