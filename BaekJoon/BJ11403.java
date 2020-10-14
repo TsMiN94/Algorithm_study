@@ -8,39 +8,61 @@ import java.util.*;
 public class BJ11403 {
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     static int N;
-    static int arr[][];
+    static int arr[][], dist[][];
     static List<Integer> graph[];
 
     public static void main(String[] args) throws IOException {
         N = Integer.parseInt(br.readLine());
         arr = new int[N][N];
+        dist = new int[N][N];
         graph = new List[N];
         for (int i = 0; i < N; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            graph[i] = new ArrayList<>();
-            for (int j = 0; j < N; j++) {
-                arr[i][j] = Integer.parseInt(st.nextToken());
-                arr[j][i] = arr[i][j];
-                if (arr[i][j] == 1) {
-                    graph[i].add(j);
-                }
-            }
+            Arrays.fill(dist[i], Integer.MAX_VALUE);
         }
 
 
-        BFS(0);
+        for (int i = 0; i < N; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < N; j++) {
+                int t = Integer.parseInt(st.nextToken());
+                if (t == 1) {
+                    arr[i][j] = 1;
+                    dist[i][j] = 1;
+                }
+            }
+        }
+        //경유지
+        for (int k = 0; k < N; k++) {
+            //출발지
+            for (int i = 0; i < N; i++) {
+                if (i == k) continue;
+                //도착지
+                for (int j = 0; j < N; j++) {
+                    if ( j == k) continue;
+                    if (arr[i][k] == 1 && arr[k][j] == 1) {
+                        arr[i][j] = 1;
+                    }
+                }
+
+            }
+        }
+
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                System.out.print(arr[i][j] +" ");
+            }
+            System.out.println();
+        }
 
     }
 
-    private static void BFS(int v) {
-        Queue<Integer> q = new LinkedList<>();
-        q.add(v);
-        while (!q.isEmpty()) {
-            int curV = q.poll();
-            List<Integer> others = graph[curV];
-            for (int i = 0; i < others.size(); i++) {
 
-            }
+    static public class Edge {
+        int aNode, bNode;
+
+        public Edge(int aNode, int bNode) {
+            this.aNode = aNode;
+            this.bNode = bNode;
         }
     }
 
