@@ -1,95 +1,170 @@
 package BackJun;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class BJ13460 {
-    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    static StringTokenizer st;
-    static char arr[][];
-    static int N, M;
 
-    public static void main(String[] args) throws IOException {
+    public static final int RED = 0, BLUE = 1;
+    public static int N, M;
+    public static char[][] map;
+    public static boolean[][][][] visited;
+    public static int[] dirX = new int[] { 0, 0, 1, -1 }; // 동서남북
+    public static int[] dirY = new int[] { 1, -1, 0, 0 };
+    public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        st = new StringTokenizer(br.readLine());
+    public static void main(String[] args) throws Exception {
+
+        StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
 
-        arr = new char[N][M];
-        int rx = 0, ry = 0, bx = 0, by = 0, C = 0, R = 0;
+        map = new char[N][M];
+        visited = new boolean[10][10][10][10];
+
+        Node node = new Node();
+        node.cnt = 0;
+
         for (int i = 0; i < N; i++) {
             String str = br.readLine();
-            for (int j = 0; j < str.length(); j++) {
-                arr[i][j] = str.charAt(j);
-                if (arr[i][j] == 'B') {
-                    bx = i;
-                    by = j;
-                } else if (arr[i][j] == 'R') {
-                    rx = i;
-                    ry = j;
-                } else if (arr[i][j] == 'O') {
-                    R = i;
-                    C = j;
+            for (int j = 0; j < M; j++) {
+                map[i][j] = str.charAt(j);
+                if (map[i][j] == 'R') {
+                    node.rRow = i;
+                    node.rCol = j;
+                } else if (map[i][j] == 'B') {
+                    node.bRow = i;
+                    node.bCol = j;
                 }
             }
         }
-        int answer = bfs(rx, ry, bx, by, R, C);
-
-        if (answer > 10) {
-            System.out.println("-1");
-        } else {
-            System.out.println(answer);
-        }
-
+        bfs(node);
     }
 
-    private static int bfs(int rx, int ry, int bx, int by, int r, int c) {
-        Queue<Ball> q = new LinkedList<>();
-        boolean redVisited[][] = new boolean[N][M];
+    public static void bfs(Node ball) {
 
-        q.add(new Ball(rx, ry, 'R', 0));
-        q.add(new Ball(bx, by, 'B', 0));
-        redVisited[rx][ry] = true;
+        Queue<Node> q = new LinkedList<Node>();
+        q.offer(ball);
 
-        int dx[] = {1, 0, -1, 0};
-        int dy[] = {0, 1, 0, -1};
-
-        Ball red, blue;
         while (!q.isEmpty()) {
-            red = q.poll();
-            blue = q.poll();
 
-            for (int i = 0; i < 4; i++) {
-                int nx = dx[i] + red.x;
-                int ny = dy[i] + red.y;
-                int tx = blue.x;
-                int ty = blue.y;
+            Node node = q.poll();
+            visited[node.rRow][node.rCol][node.bRow][node.bCol] = true;
 
-                if (nx < 0 || ny < 0 || nx >= N || ny >= M || arr[nx][ny] == '#') continue;
+            //11번 이상 굴렸을 경우 -1을 출력한다.
+            if (node.cnt >= 10) {
+                System.out.println(-1);
+                return;
+            }
 
+            //현재 두 구슬의 위치를 기준으로 동,서,남,북 으로 굴려본다.
+            for (int dir = 0; dir < 4; dir++) {
+
+                //파란색 구슬을 먼저 굴린다.
+                int bnRow = node.bRow;
+                int bnCol = node.bCol;
+                while (map[bnRow + dirX[dir]][bnCol + dirY[dir]] != '#') {
+                    bnRow += dirX[dir];
+                    bnCol += dirY[dir];
+                    if (map[bnRow][bnCol] == 'O') {
+                        break;
+                    }
+                }
+
+                //그 다음, 빨간색 구슬을 굴린다.
+                int rnRow = node.rRow;
+                int rnCol = node.rCol;
+                while (map[rnRow + dirX[dir]][rnCol + dirY[dir]] != '#') {
+                    rnRow += dirX[dir];
+                    rnCol += dirY[dir];
+                    if (map[rnRow][rnCol] == 'O') {
+                        break;
+                    }
+                }
+
+                //파란색 구슬이 'O'에 빠졌다면, 탐색을 멈춘다.
+                if (map[bnRow][bnCol] == 'O')
+                    continue;
+
+                //빨간색 구슬만 'O'에 빠졌다면, 정답을 출력한다.
+                if (map[rnRow][rnCol] == 'O') {
+                    System.out.println(node.cnt + 1);
+                    return;
+                }
+
+                //두 구슬의 위치가 같다면, 위치를 조정한다.
+                if (rnRow == bnRow && rnCol == bnCol) {
+
+                    switch (dir) {
+
+                        case 0: // 동
+                            if (node.rCol > node.bCol)
+                                bnCol -= 1;
+                            else
+                                rnCol -= 1;
+                            break;
+                        case 1: // 서
+                            if (node.rCol > node.bCol)
+                                rnCol += 1;
+                            else
+                                bnCol += 1;
+                            break;
+                        case 2: // 남
+                            if (node.rRow > node.bRow)
+                                bnRow -= 1;
+                            else
+                                rnRow -= 1;
+                            break;
+                        case 3: // 북
+                            if (node.rRow > node.bRow)
+                                rnRow += 1;
+                            else
+                                bnRow += 1;
+                            break;
+                    }
+                }
+                //두 구슬을 굴린 후의 각각의 위치가 처음 탐색하는 것이라면 큐에 넣는다.
+                if (!visited[rnRow][rnCol][bnRow][bnCol]) {
+                    q.offer(new Node(rnRow, rnCol, bnRow, bnCol, node.cnt + 1));
+                }
             }
         }
+        System.out.println(-1);
 
-
-        return -1;
     }
 
-    public static class Ball {
-        int x, y;
-        char color;
-        int cnt = 0;
+    public static void showMap(int[][] map) {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                System.out.print(map[i][j] + " ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
 
-        public Ball(int x, int y, char color, int cnt) {
-            this.x = x;
-            this.y = y;
-            this.color = color;
+    public static class Node {
+
+        int rRow;
+        int rCol;
+        int bRow;
+        int bCol;
+        int cnt;
+
+        public Node(int rRow, int rCol, int bRow, int bCol, int cnt) {
+            this.rRow = rRow;
+            this.rCol = rCol;
+            this.bRow = bRow;
+            this.bCol = bCol;
             this.cnt = cnt;
         }
-    }
 
+        public Node() {
+        }
+
+    }
 }
+
