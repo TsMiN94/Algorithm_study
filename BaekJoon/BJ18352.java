@@ -40,17 +40,18 @@ public class BJ18352 {
         pq.add(new Node(start, 0));
         while (!pq.isEmpty()) {
             Node curNode = pq.poll();
+            visited[curNode.no] = true;
             if (curNode.dist == K) {
                 answerList.add(curNode.no);
                 continue;
             }
             int minIndex = curNode.no;
-            List<Integer> list = graph[minIndex];
-            for (int i = 0; i < list.size(); i++) {
-                int to = list.get(i);
-                if (!visited[to]) {
-                    visited[to] = true;
-                    pq.add(new Node(to, curNode.dist + 1));
+            List<Integer> nextVertaxList = graph[minIndex];
+            for (int i = 0; i < nextVertaxList.size(); i++) {
+                int to = nextVertaxList.get(i);
+                if (!visited[to] && dist[to] > dist[minIndex] + 1) {
+                    dist[to] = dist[minIndex] + 1;
+                    pq.add(new Node(to, dist[minIndex] + 1));
                 }
             }
         }
@@ -58,8 +59,8 @@ public class BJ18352 {
         Collections.sort(answerList);
         if (answerList.size() == 0) {
             System.out.println(-1);
-        }else{
-            for(int t: answerList)System.out.println(t+1);
+        } else {
+            for (int t : answerList) System.out.println(t + 1);
         }
 
     }
